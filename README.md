@@ -1,46 +1,122 @@
-# Getting Started with Create React App
+# Eleora Food Company - React + Supabase
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern e-commerce platform for authentic Maharashtrian masalas and chutneys, built with React and Supabase.
+
+## Features
+
+- 🛍️ Product catalog with detailed views
+- 🛒 Shopping cart functionality
+- 👤 User authentication with Supabase
+- 💳 Checkout process
+- 📱 Fully responsive design
+- 🎨 Same elegant dark theme as original
+- ⚡ Fast and modern React architecture
+
+## Tech Stack
+
+- **Frontend**: React 18 with TypeScript
+- **Backend**: Supabase (PostgreSQL database, Authentication, Real-time)
+- **Routing**: React Router v6
+- **Styling**: CSS3 with CSS Variables
+- **State Management**: React Context API
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ installed
+- Supabase account and project
+
+### Installation
+
+1. Clone the repository
+```bash
+cd eleora-react
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+
+3. Update Supabase credentials in `src/config/supabase.ts`
+
+4. Start the development server
+```bash
+npm start
+```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Available Scripts
 
-In the project directory, you can run:
+- `npm start` - Runs the app in development mode
+- `npm run build` - Builds the app for production
+- `npm test` - Launches the test runner
+- `npm run eject` - Ejects from Create React App (one-way operation)
 
-### `npm start`
+## Project Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
+src/
+├── components/       # Reusable components (Header, Footer, ProductCard)
+├── pages/           # Page components (Home, Products, Cart, etc.)
+├── context/         # React Context providers (Auth, Cart)
+├── config/          # Configuration files (Supabase)
+├── types/           # TypeScript type definitions
+├── App.tsx          # Main app component with routing
+└── index.tsx        # App entry point
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Database Schema
 
-### `npm test`
+The app uses the same Supabase schema as the original project:
+- `products` - Product catalog
+- `user_profiles` - User information
+- `orders` - Order records
+- `order_items` - Order line items
+- `contact_messages` - Contact form submissions
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Deployment
 
-### `npm run build`
+### Build for Production
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm run build
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+This creates an optimized production build in the `build/` folder.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Deploy to Vercel
 
-### `npm run eject`
+1. Install Vercel CLI: `npm i -g vercel`
+2. Run: `vercel`
+3. Follow the prompts
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Deploy to Netlify
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Build the project: `npm run build`
+2. Drag and drop the `build/` folder to Netlify
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Features Comparison
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+All features from the original HTML/CSS/JS version have been converted:
 
-## Learn More
+✅ Product listing and details
+✅ Shopping cart with local storage
+✅ User authentication
+✅ Checkout process
+✅ Contact form
+✅ About page
+✅ Responsive design
+✅ Same visual theme and styling
+✅ WhatsApp integration
+✅ Supabase integration
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## License
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+MIT License - feel free to use this project for your own purposes.
+
+## Support
+
+For support, email info@eleorafood.com or message us on WhatsApp at +91 98765 43210.
