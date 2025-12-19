@@ -29,9 +29,9 @@ const Footer: React.FC = () => {
               WhatsApp Order
             </a>
             <div className="social-icons">
-              <a href="#" className="social-icon">📘</a>
-              <a href="#" className="social-icon">📷</a>
-              <a href="#" className="social-icon">🐦</a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon">📘</a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon">📷</a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-icon">🐦</a>
             </div>
           </div>
         </div>

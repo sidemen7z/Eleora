@@ -4,7 +4,6 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../config/supabase';
 import { formatPrice } from '../utils/formatters';
-import { getStripe } from '../utils/stripe';
 
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
