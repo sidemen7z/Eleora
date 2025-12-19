@@ -16,6 +16,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const checkUser = async () => {
+    try {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (authUser) {
+        await loadUserProfile(authUser.id);
+      }
+    } catch (error) {
+      console.error('Error checking user:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     checkUser();
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -29,20 +42,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => {
       authListener.subscription.unsubscribe();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const checkUser = async () => {
-    try {
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      if (authUser) {
-        await loadUserProfile(authUser.id);
-      }
-    } catch (error) {
-      console.error('Error checking user:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const loadUserProfile = async (userId: string) => {
     try {
@@ -60,9 +61,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error, data: authData } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
-    if (data.user) await loadUserProfile(data.user.id);
+    if (authData.user) await loadUserProfile(authData.user.id);
   };
 
   const signUp = async (email: string, password: string, userData: any) => {
