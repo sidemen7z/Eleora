@@ -122,11 +122,6 @@ const ProductDetail: React.FC = () => {
         <div className="product-detail-container">
           <div className="product-detail-image">
             <img src={currentImage} alt={product.name} />
-            {product.size_images && (
-              <p style={{ textAlign: 'center', marginTop: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
-                📦 Image changes based on selected size
-              </p>
-            )}
           </div>
           
           <div className="product-detail-info">
@@ -185,8 +180,8 @@ const ProductDetail: React.FC = () => {
                 <span className="price-value">₹{formatPrice(totalPrice)}</span>
               </div>
 
-              <button className="btn btn-primary" onClick={handleAddToCart}>
-                Add to Cart
+              <button className="btn btn-primary" onClick={handleAddToCart} style={{ width: '100%', padding: '1rem', fontSize: '1.1rem' }}>
+                ADD TO CART
               </button>
             </div>
           </div>
