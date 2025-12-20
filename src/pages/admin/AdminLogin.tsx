@@ -20,8 +20,8 @@ const AdminLogin: React.FC = () => {
     // Add timeout to prevent infinite loading
     const timeoutId = setTimeout(() => {
       setLoading(false);
-      setError('Login timeout. Please try again.');
-    }, 10000); // 10 second timeout
+      setError('Login timeout. Please check your connection and try again.');
+    }, 30000); // 30 second timeout
 
     try {
       // Sign in first
