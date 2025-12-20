@@ -6,6 +6,7 @@ import { formatPrice } from '../../utils/formatters';
 const AdminProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState({
@@ -47,6 +48,7 @@ const AdminProducts: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaving(true);
 
     const productData = {
       name: formData.name,
@@ -78,22 +80,25 @@ const AdminProducts: React.FC = () => {
           .eq('id', editingProduct.id);
 
         if (error) throw error;
-        alert('Product updated successfully!');
+        alert('✅ Product updated successfully!');
       } else {
         const { error } = await supabase
           .from('products')
           .insert([productData]);
 
         if (error) throw error;
-        alert('Product added successfully!');
+        alert('✅ Product added successfully!');
       }
 
+      // Reload products first, then close modal
+      await loadProducts();
       setShowModal(false);
       resetForm();
-      loadProducts();
     } catch (error: any) {
       console.error('Error saving product:', error);
-      alert('Error: ' + error.message);
+      alert('❌ Error: ' + error.message);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -373,11 +378,11 @@ const AdminProducts: React.FC = () => {
               </div>
 
               <div className="form-actions">
-                <button type="button" className="btn-secondary" onClick={() => setShowModal(false)}>
+                <button type="button" className="btn-secondary" onClick={() => setShowModal(false)} disabled={saving}>
                   Cancel
                 </button>
-                <button type="submit" className="btn-primary">
-                  {editingProduct ? 'Update Product' : 'Add Product'}
+                <button type="submit" className="btn-primary" disabled={saving}>
+                  {saving ? '⏳ Saving...' : (editingProduct ? '✅ Update Product' : '➕ Add Product')}
                 </button>
               </div>
             </form>
