@@ -25,10 +25,14 @@ const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    checkAdminAccess();
+    if (user) {
+      checkAdminAccess();
+    } else {
+      navigate('/admin/login');
+    }
     loadDashboardStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   const checkAdminAccess = async () => {
     if (!user) {

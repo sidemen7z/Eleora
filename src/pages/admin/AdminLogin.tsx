@@ -17,28 +17,51 @@ const AdminLogin: React.FC = () => {
     setError('');
     setLoading(true);
 
+    // Add timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      setLoading(false);
+      setError('Login timeout. Please try again.');
+    }, 10000); // 10 second timeout
+
     try {
-      await signIn(email, password);
+      // Sign in first
+      const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (signInError) throw signInError;
       
-      // Check if user is admin
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
+      if (authData.user) {
+        // Check admin status immediately
+        const { data: profile, error: profileError } = await supabase
           .from('user_profiles')
           .select('is_admin')
-          .eq('id', user.id)
+          .eq('id', authData.user.id)
           .single();
 
+        if (profileError) {
+          console.error('Profile error:', profileError);
+          throw new Error('Failed to verify admin status');
+        }
+
         if (profile?.is_admin) {
+          // Success - clear timeout and navigate
+          clearTimeout(timeoutId);
           navigate('/admin');
         } else {
+          // Not an admin - sign out
+          clearTimeout(timeoutId);
           setError('Access denied. Admin privileges required.');
           await supabase.auth.signOut();
         }
       }
     } catch (error: any) {
+      clearTimeout(timeoutId);
+      console.error('Login error:', error);
       setError(error.message || 'Invalid credentials');
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   };
