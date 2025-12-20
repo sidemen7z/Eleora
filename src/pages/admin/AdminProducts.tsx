@@ -50,6 +50,12 @@ const AdminProducts: React.FC = () => {
     e.preventDefault();
     setSaving(true);
 
+    // Add timeout to prevent infinite saving
+    const timeoutId = setTimeout(() => {
+      setSaving(false);
+      alert('⏱️ Save timeout. Please check your connection and try again.');
+    }, 15000); // 15 second timeout
+
     const productData = {
       name: formData.name,
       short_name: formData.short_name,
@@ -80,6 +86,7 @@ const AdminProducts: React.FC = () => {
           .eq('id', editingProduct.id);
 
         if (error) throw error;
+        clearTimeout(timeoutId);
         alert('✅ Product updated successfully!');
       } else {
         const { error } = await supabase
@@ -87,6 +94,7 @@ const AdminProducts: React.FC = () => {
           .insert([productData]);
 
         if (error) throw error;
+        clearTimeout(timeoutId);
         alert('✅ Product added successfully!');
       }
 
@@ -95,9 +103,11 @@ const AdminProducts: React.FC = () => {
       setShowModal(false);
       resetForm();
     } catch (error: any) {
+      clearTimeout(timeoutId);
       console.error('Error saving product:', error);
       alert('❌ Error: ' + error.message);
     } finally {
+      clearTimeout(timeoutId);
       setSaving(false);
     }
   };
