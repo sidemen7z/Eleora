@@ -7,6 +7,7 @@ const AdminProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState({
@@ -43,6 +44,64 @@ const AdminProducts: React.FC = () => {
       console.error('Error loading products:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const uploadImage = async (file: File, imageType: string): Promise<string | null> => {
+    try {
+      setUploading(true);
+      
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('❌ Please upload an image file (JPG, PNG, etc.)');
+        return null;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('❌ Image size must be less than 5MB');
+        return null;
+      }
+
+      // Create unique filename
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `products/${fileName}`;
+
+      // Upload to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(filePath);
+
+      return publicUrl;
+    } catch (error: any) {
+      console.error('Error uploading image:', error);
+      alert('❌ Upload failed: ' + error.message);
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, imageType: 'main' | '50g' | '100g' | '200g' | '500g') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const url = await uploadImage(file, imageType);
+    if (url) {
+      if (imageType === 'main') {
+        setFormData({ ...formData, image_url: url });
+      } else {
+        setFormData({ ...formData, [`image_${imageType}`]: url });
+      }
+      alert('✅ Image uploaded successfully!');
     }
   };
 
@@ -278,15 +337,28 @@ const AdminProducts: React.FC = () => {
 
               <div className="form-group">
                 <label>Main Image URL *</label>
-                <input
-                  type="text"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  required
-                  placeholder="images/product.jpg"
-                />
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
+                  <input
+                    type="text"
+                    value={formData.image_url}
+                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                    required
+                    placeholder="Paste URL or upload image"
+                    style={{ flex: 1 }}
+                  />
+                  <label className="btn-upload" style={{ margin: 0, cursor: 'pointer', padding: '0.75rem 1rem', backgroundColor: 'var(--color-gold)', color: 'var(--color-black)', borderRadius: '4px', fontWeight: '600', whiteSpace: 'nowrap' }}>
+                    {uploading ? '⏳ Uploading...' : '📤 Upload'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e, 'main')}
+                      style={{ display: 'none' }}
+                      disabled={uploading}
+                    />
+                  </label>
+                </div>
                 <small style={{ color: 'var(--color-text-muted)', display: 'block', marginTop: '0.25rem' }}>
-                  Default image for all sizes
+                  Default image for all sizes (JPG, PNG - Max 5MB)
                 </small>
               </div>
 
@@ -298,42 +370,94 @@ const AdminProducts: React.FC = () => {
               <div className="form-row">
                 <div className="form-group">
                   <label>50g Image URL</label>
-                  <input
-                    type="text"
-                    value={formData.image_50g}
-                    onChange={(e) => setFormData({ ...formData, image_50g: e.target.value })}
-                    placeholder="images/product-50g.jpg"
-                  />
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <input
+                      type="text"
+                      value={formData.image_50g}
+                      onChange={(e) => setFormData({ ...formData, image_50g: e.target.value })}
+                      placeholder="Paste URL or upload"
+                      style={{ flex: 1 }}
+                    />
+                    <label className="btn-upload-small" style={{ margin: 0, cursor: 'pointer', padding: '0.5rem', backgroundColor: 'var(--color-gold)', color: 'var(--color-black)', borderRadius: '4px', fontSize: '0.9rem' }}>
+                      📤
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, '50g')}
+                        style={{ display: 'none' }}
+                        disabled={uploading}
+                      />
+                    </label>
+                  </div>
                 </div>
                 <div className="form-group">
                   <label>100g Image URL</label>
-                  <input
-                    type="text"
-                    value={formData.image_100g}
-                    onChange={(e) => setFormData({ ...formData, image_100g: e.target.value })}
-                    placeholder="images/product-100g.jpg"
-                  />
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <input
+                      type="text"
+                      value={formData.image_100g}
+                      onChange={(e) => setFormData({ ...formData, image_100g: e.target.value })}
+                      placeholder="Paste URL or upload"
+                      style={{ flex: 1 }}
+                    />
+                    <label className="btn-upload-small" style={{ margin: 0, cursor: 'pointer', padding: '0.5rem', backgroundColor: 'var(--color-gold)', color: 'var(--color-black)', borderRadius: '4px', fontSize: '0.9rem' }}>
+                      📤
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, '100g')}
+                        style={{ display: 'none' }}
+                        disabled={uploading}
+                      />
+                    </label>
+                  </div>
                 </div>
               </div>
 
               <div className="form-row">
                 <div className="form-group">
                   <label>200g Image URL</label>
-                  <input
-                    type="text"
-                    value={formData.image_200g}
-                    onChange={(e) => setFormData({ ...formData, image_200g: e.target.value })}
-                    placeholder="images/product-200g.jpg"
-                  />
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <input
+                      type="text"
+                      value={formData.image_200g}
+                      onChange={(e) => setFormData({ ...formData, image_200g: e.target.value })}
+                      placeholder="Paste URL or upload"
+                      style={{ flex: 1 }}
+                    />
+                    <label className="btn-upload-small" style={{ margin: 0, cursor: 'pointer', padding: '0.5rem', backgroundColor: 'var(--color-gold)', color: 'var(--color-black)', borderRadius: '4px', fontSize: '0.9rem' }}>
+                      📤
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, '200g')}
+                        style={{ display: 'none' }}
+                        disabled={uploading}
+                      />
+                    </label>
+                  </div>
                 </div>
                 <div className="form-group">
                   <label>500g Image URL</label>
-                  <input
-                    type="text"
-                    value={formData.image_500g}
-                    onChange={(e) => setFormData({ ...formData, image_500g: e.target.value })}
-                    placeholder="images/product-500g.jpg"
-                  />
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <input
+                      type="text"
+                      value={formData.image_500g}
+                      onChange={(e) => setFormData({ ...formData, image_500g: e.target.value })}
+                      placeholder="Paste URL or upload"
+                      style={{ flex: 1 }}
+                    />
+                    <label className="btn-upload-small" style={{ margin: 0, cursor: 'pointer', padding: '0.5rem', backgroundColor: 'var(--color-gold)', color: 'var(--color-black)', borderRadius: '4px', fontSize: '0.9rem' }}>
+                      📤
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e, '500g')}
+                        style={{ display: 'none' }}
+                        disabled={uploading}
+                      />
+                    </label>
+                  </div>
                 </div>
               </div>
 
