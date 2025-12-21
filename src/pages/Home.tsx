@@ -134,21 +134,21 @@ const Home: React.FC = () => {
           <div className="magic-grid">
             <div className="magic-card">
               <div className="magic-card-image">
-                <img src="/images/goda-masala.jpg" alt="Goda Masala" />
+                <img src="/images/goda-masala.png" alt="Goda Masala" />
               </div>
               <h3 className="magic-card-title">Goda Masala</h3>
               <p className="magic-card-text">The soul of Maharashtrian cuisine with its sweet and aromatic profile</p>
             </div>
             <div className="magic-card">
               <div className="magic-card-image">
-                <img src="/images/peanut-chutney.jpg" alt="Peanut Chutney" />
+                <img src="/images/peanut chutney.png" alt="Peanut Chutney" />
               </div>
               <h3 className="magic-card-title">Peanut Chutney</h3>
               <p className="magic-card-text">Crunchy roasted perfection that elevates every meal</p>
             </div>
             <div className="magic-card">
               <div className="magic-card-image">
-                <img src="/images/flaxseed-chutney.jpg" alt="Flaxseed Chutney" />
+                <img src="/images/flaxseedschutney.png" alt="Flaxseed Chutney" />
               </div>
               <h3 className="magic-card-title">Flaxseed Chutney</h3>
               <p className="magic-card-text">Healthy and flavorful with a nutty spicy kick</p>
