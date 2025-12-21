@@ -305,12 +305,18 @@ a {
     width: 100%;
     height: 300px;
     overflow: hidden;
+    background: var(--color-dark-gray);
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .product-card-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
 }
 
 .product-card-content {
@@ -542,13 +548,17 @@ a {
     height: 500px;
     border-radius: 8px;
     overflow: hidden;
-    background-color: var(--color-medium-gray);
+    background-color: var(--color-dark-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .product-detail-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
 }
 
 .product-detail-info h1 {
